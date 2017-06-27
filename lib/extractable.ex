@@ -12,7 +12,6 @@ defprotocol Extractable do
   because the wrapping/unwrapping of certain structures has to happen once per extracted element,
   rather than once per collection.
 
-
   """
 
   @doc """
@@ -23,20 +22,20 @@ defprotocol Extractable do
       iex> Extractable.extract([])
       :error
 
-      # iex> Extractable.extract([])
-      # :error
+      iex> Extractable.extract([])
+      :error
 
-      # iex> Extractable.extract([1, 2, 3])
-      # {:ok, {1, [2, 3]}}
+      iex> Extractable.extract([1, 2, 3])
+      {:ok, {1, [2, 3]}}
 
-      # iex> Extractable.extract(%{a: 1, b: 2, c: 3})
-      # {:ok, {{:a, 1}, %{b: 2, c: 3}}}
+      iex> Extractable.extract(%{a: 1, b: 2, c: 3})
+      {:ok, {{:a, 1}, %{b: 2, c: 3}}}
 
-      # iex> Extractable.extract(MapSet.new())
-      # :error
+      iex> Extractable.extract(MapSet.new())
+      :error
 
-      # iex> Extractable.extract(MapSet.new([1, 2, 3]))
-      # {:ok, {1, #MapSet<[2, 3]>}}
+      iex> Extractable.extract(MapSet.new([1, 2, 3]))
+      {:ok, {1, #MapSet<[2, 3]>}}
 
   """
 
@@ -81,11 +80,12 @@ defimpl Extractable, for: MapSet do
   end
 end
 
-defimpl Extractable, for: Tuple do
-  def extract({}), do: :error
-  def extract(tuple) do
-    elem = elem(tuple, 0)
-    rest = Tuple.delete_at(tuple, 0)
-    {:ok, {elem, rest}}
-  end
-end
+# TODO: Decide if it is a good or bad idea to add a Tuple-implementation
+# defimpl Extractable, for: Tuple do
+#   def extract({}), do: :error
+#   def extract(tuple) do
+#     elem = elem(tuple, 0)
+#     rest = Tuple.delete_at(tuple, 0)
+#     {:ok, {elem, rest}}
+#   end
+# end
