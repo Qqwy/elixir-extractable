@@ -30,9 +30,6 @@ defprotocol Extractable do
       iex> Extractable.extract([])
       :error
 
-      iex> Extractable.extract([])
-      :error
-
       iex> Extractable.extract([1, 2, 3])
       {:ok, {1, [2, 3]}}
 

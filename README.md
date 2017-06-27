@@ -1,5 +1,8 @@
 # Extractable
 
+[![hex.pm version](https://img.shields.io/hexpm/v/extractable.svg)](https://hex.pm/packages/extractable)
+
+
 A lightweight reusable Extractable protocol, allowing extracting elements one-at-a-time from a collection.
 
 ## Description
@@ -29,9 +32,6 @@ Some examples:
 ## Examples
 
 ```elixir
-iex> Extractable.extract([])
-:error
-
 iex> Extractable.extract([])
 :error
 
