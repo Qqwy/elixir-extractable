@@ -1,10 +1,10 @@
 # Extractable
 
-**TODO: Add description**
+A lightweight reusable Extractable protocol, allowing extracting elements one-at-a-time from a collection.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
+The package can be installed
 by adding `extractable` to your list of dependencies in `mix.exs`:
 
 ```elixir

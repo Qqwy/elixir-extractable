@@ -7,7 +7,12 @@ defmodule Extractable.Mixfile do
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps()]
+     deps: deps(),
+     name: "Extractable",
+     description: description(),
+     source_url: "https://github.com/Qqwy/elixir-extractable",
+     package: package()
+    ]
   end
 
   # Configuration for the OTP application
@@ -28,6 +33,24 @@ defmodule Extractable.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    []
+    [
+      {:ex_doc, "~> 0.14", only: :dev}
+    ]
+  end
+
+  defp description do
+    """
+    A lightweight reusable Extractable protocol, allowing extracting elements one-at-a-time from a collection.
+    """
+  end
+
+  defp package() do
+    [
+      name: :extractable,
+      files: ["lib", "mix.exs", "README*"],
+      maintainers: ["Qqwy/Wiebe-Marten Wijnja"],
+      licenses: ["Apache 2.0"],
+      links: %{"GitHub" => "https://github.com/Qqwy/elixir-extractable"}
+    ]
   end
 end
