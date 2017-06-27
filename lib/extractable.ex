@@ -15,7 +15,15 @@ defprotocol Extractable do
   """
 
   @doc """
+  Extractable.extract/2 returns `{:ok, {item, collection}}` if it was possible to extract an item from the collection.
+  `:error` is returned when the `collection` is for instance (currently) empty.
 
+  What item is extracted depends on the collection: For collections where it matters, the most logical or efficient approach is taken.
+  Some examples:
+
+  - For Lists, the _head_ of the list is returned as item.
+  - For Maps, an arbitrary `{key, value}` is returned as item.
+  - For MapSets, an arbitrary value is returned as item.
 
   ## Examples
 
@@ -39,7 +47,6 @@ defprotocol Extractable do
 
   """
 
-
   @spec extract(Extractable.t) :: {:ok, {item :: any, Extractable.t}} | :error
   def extract(collection)
 end
@@ -51,9 +58,9 @@ end
 
 defimpl Extractable, for: Map do
   @doc """
-  The map implementation is unfortunately not very performant,
-  because Erlang does not expose a way to get an arbitrary {key, value}
-  from the map, so the whole map needs to be converted to a list and back again.
+  The Map implementation is unfortunately not very performant,
+  because Erlang does not expose a way to get an arbitrary `{key, value}`
+  from the Map, so the whole map needs to be converted to a list and back again.
   """
   def extract(map) when map_size(map) == 0, do: :error
   def extract(map) do
@@ -65,9 +72,9 @@ end
 
 defimpl Extractable, for: MapSet do
   @doc """
-  The map implementation is unfortunately not very performant,
-  because Erlang does not expose a way to get an arbitrary {key, value}
-  from the map, so the whole map needs to be converted to a list and back again.
+  The MapSet implementation is unfortunately not very performant,
+  because Erlang does not expose a way to get an arbitrary `{key, value}`
+  from the MapSet, so the whole map needs to be converted to a list and back again.
   """
   def extract(map_set) do
     if MapSet.equal?(map_set, MapSet.new()) do
