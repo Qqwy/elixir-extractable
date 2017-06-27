@@ -86,13 +86,3 @@ defimpl Extractable, for: MapSet do
     end
   end
 end
-
-# TODO: Decide if it is a good or bad idea to add a Tuple-implementation
-# defimpl Extractable, for: Tuple do
-#   def extract({}), do: :error
-#   def extract(tuple) do
-#     elem = elem(tuple, 0)
-#     rest = Tuple.delete_at(tuple, 0)
-#     {:ok, {elem, rest}}
-#   end
-# end
