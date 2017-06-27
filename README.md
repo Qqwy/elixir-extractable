@@ -2,6 +2,55 @@
 
 A lightweight reusable Extractable protocol, allowing extracting elements one-at-a-time from a collection.
 
+## Description
+
+Extractable is a simple protocol that allows for the extraction of elements from a collection,
+one element at a time.
+
+This is the major difference with the Enumerable protocol:
+Enumerable only works with whole collections at a time,
+so extracting a few items and then returning the rest of the unconsumed collection is impossible.
+
+This is exactly what Extractable _does_ allow.
+Extractable is however slower if used repeatedly,
+because the wrapping/unwrapping of certain structures has to happen once per extracted element,
+rather than once per collection.
+
+Extractable.extract/2 returns `{:ok, {item, collection}}` if it was possible to extract an item from the collection.
+`:error` is returned when the `collection` is for instance (currently) empty.
+
+What item is extracted depends on the collection: For collections where it matters, the most logical or efficient approach is taken.
+Some examples:
+
+- For Lists, the _head_ of the list is returned as item.
+- For Maps, an arbitrary `{key, value}` is returned as item.
+- For MapSets, an arbitrary value is returned as item.
+
+## Examples
+
+```elixir
+iex> Extractable.extract([])
+:error
+
+iex> Extractable.extract([])
+:error
+
+iex> Extractable.extract([1, 2, 3])
+{:ok, {1, [2, 3]}}
+
+iex> Extractable.extract(%{a: 1, b: 2, c: 3})
+{:ok, {{:a, 1}, %{b: 2, c: 3}}}
+
+iex> Extractable.extract(MapSet.new())
+:error
+
+iex> Extractable.extract(MapSet.new([1, 2, 3]))
+{:ok, {1, #MapSet<[2, 3]>}}
+```
+
+
+
+
 ## Installation
 
 The package can be installed
