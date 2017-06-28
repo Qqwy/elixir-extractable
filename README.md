@@ -1,7 +1,7 @@
 # Extractable
 
 [![hex.pm version](https://img.shields.io/hexpm/v/extractable.svg)](https://hex.pm/packages/extractable)
-
+[![Build Status](https://travis-ci.org/Qqwy/elixir-extractable.svg?branch=master)](https://travis-ci.org/Qqwy/elixir-extractable)
 
 A lightweight reusable Extractable protocol, allowing extracting elements one-at-a-time from a collection.
 
