@@ -3,11 +3,12 @@ defmodule Extractable.Mixfile do
 
   def project do
     [app: :extractable,
-     version: "0.1.0",
+     version: "0.1.1",
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps(),
+     consolidate_protocols: Mix.env != :test, # Required until elixir-lang/elixir#6270 is fixed.
      name: "Extractable",
      description: description(),
      source_url: "https://github.com/Qqwy/elixir-extractable",

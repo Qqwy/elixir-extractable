@@ -39,8 +39,11 @@ defprotocol Extractable do
       iex> Extractable.extract(MapSet.new())
       :error
 
-      iex> Extractable.extract(MapSet.new([1, 2, 3]))
-      {:ok, {1, #MapSet<[2, 3]>}}
+      iex> {:ok, {elem, result}} = Extractable.extract(MapSet.new([1, 2, 3]))
+      iex> elem
+      1
+      iex> result
+      #MapSet<[2, 3]>
 
   """
 
