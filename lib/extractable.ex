@@ -16,7 +16,15 @@ defprotocol Extractable do
 
   @doc """
   Extractable.extract/2 returns `{:ok, {item, collection}}` if it was possible to extract an item from the collection.
-  `:error` is returned when the `collection` is for instance (currently) empty.
+  `{:error, reason}` is returned when no element can be extracted.
+
+  The following error reasons are standardized:
+
+  - `:empty`: the `collection` is empty, and an element needs to be inserted first before extracting would work.
+
+  Other reasons might be used if it makes sense for your collection.
+
+  ### Extraction Order
 
   What item is extracted depends on the collection: For collections where it matters, the most logical or efficient approach is taken.
   Some examples:
@@ -37,7 +45,7 @@ defprotocol Extractable do
       {:ok, {{:a, 1}, %{b: 2, c: 3}}}
 
       iex> Extractable.extract(MapSet.new())
-      :error
+      {:error, :empty}
 
       iex> {:ok, {elem, result}} = Extractable.extract(MapSet.new([1, 2, 3]))
       iex> elem
@@ -78,7 +86,7 @@ defimpl Extractable, for: MapSet do
   """
   def extract(map_set) do
     if MapSet.equal?(map_set, MapSet.new()) do
-      :error
+      {:error, :empty}
     else
       [elem | rest_list] = MapSet.to_list(map_set)
       rest = MapSet.new(rest_list)
