@@ -1,4 +1,6 @@
 defprotocol Extractable do
+  @fallback_to_any true
+
   @moduledoc """
   Extractable is a simple protocol that allows for the extraction of elements from a collection,
   one element at a time.
@@ -36,7 +38,7 @@ defprotocol Extractable do
   ## Examples
 
       iex> Extractable.extract([])
-      :error
+      {:error, :empty}
 
       iex> Extractable.extract([1, 2, 3])
       {:ok, {1, [2, 3]}}
@@ -53,44 +55,85 @@ defprotocol Extractable do
       iex> result
       #MapSet<[2, 3]>
 
+      iex> {:ok, {elem, result}} = Extractable.extract(200..100)
+      iex> elem
+      200
+      iex> result
+      199..100
+
   """
 
-  @spec extract(Extractable.t) :: {:ok, {item :: any, Extractable.t}} | :error
+  @spec extract(Extractable.t()) :: {:ok, {item :: any, Extractable.t()}} | :error
   def extract(collection)
 end
 
 defimpl Extractable, for: List do
-  def extract([]), do: :error
+  def extract([]), do: {:error, :empty}
   def extract([elem | rest]), do: {:ok, {elem, rest}}
 end
 
 defimpl Extractable, for: Map do
   @doc """
-  The Map implementation is unfortunately not very performant,
-  because Erlang does not expose a way to get an arbitrary `{key, value}`
-  from the Map, so the whole map needs to be converted to a list and back again.
+  Extracts the element corresponding to the first key according to the Erlang term of ordering.
   """
-  def extract(map) when map_size(map) == 0, do: :error
   def extract(map) do
-    [elem | rest_list] = :maps.to_list(map)
-    rest = :maps.from_list(rest_list)
-    {:ok, {elem, rest}}
+    case Map.keys(map) do
+      [] ->
+        {:error, :empty}
+
+      [key | _rest_keys] ->
+        {value, rest} = Map.pop(map, key)
+        element = {key, value}
+        {:ok, {element, rest}}
+    end
   end
 end
 
 defimpl Extractable, for: MapSet do
   @doc """
-  The MapSet implementation is unfortunately not very performant,
-  because Erlang does not expose a way to get an arbitrary `{key, value}`
-  from the MapSet, so the whole map needs to be converted to a list and back again.
+  Extracts the element corresponding to the first key according to the Erlang term of ordering.
   """
   def extract(map_set) do
-    if MapSet.equal?(map_set, MapSet.new()) do
-      {:error, :empty}
-    else
-      [elem | rest_list] = MapSet.to_list(map_set)
-      rest = MapSet.new(rest_list)
-      {:ok, {elem, rest}}
+    case Enum.fetch(map_set, 0) do
+      :error ->
+        {:error, :empty}
+
+      {:ok, element} ->
+        rest = MapSet.delete(map_set, element)
+        {:ok, {element, rest}}
+    end
+  end
+end
+
+defimpl Extractable, for: Range do
+  @doc """
+  Extracts the element corresponding to the first key according to the Erlang term of ordering.
+  """
+  def extract(first..first) do
+    {:ok, {first, nil}}
+  end
+
+  def extract(first..last) when first <= last do
+    {:ok, {first, (first + 1)..last}}
+  end
+
+  def extract(first..last) when first > last do
+    {:ok, {first, (first - 1)..last}}
+  end
+end
+
+defimpl Extractable, for: Any do
+  @doc """
+  Extracts the first element to the Erlang term of ordering.
+  """
+  def extract(enumerable) do
+    case Enum.fetch(enumerable, 0) do
+      :error ->
+        {:error, :empty}
+
+      {:ok, element} ->
+        rest = Enum.drop(enumerable, 1)
+        {:ok, {element, rest}}
     end
   end
 end
