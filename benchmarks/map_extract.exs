@@ -63,7 +63,9 @@ Benchee.run(
     "empty" => %{},
     "10" => map_with_size.(10),
     "100" => map_with_size.(100),
-    "1000" => map_with_size.(1000),
-    "10000" => map_with_size.(10000),
-  }
+    # "1000" => map_with_size.(1000),
+    # "10000" => map_with_size.(10000),
+  },
+  time: 1,
+  memory_time: 1
 )
