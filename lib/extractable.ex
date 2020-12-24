@@ -94,3 +94,13 @@ defimpl Extractable, for: MapSet do
     end
   end
 end
+
+defimpl Extractable, for: Tuple do
+  def extract({}),
+    do: {:error, :empty}
+
+  def extract(tuple) do
+    element = elem(tuple, 0)
+    {:ok, {element, Tuple.delete_at(tuple, 0)}}
+  end
+end
