@@ -55,7 +55,7 @@ defprotocol Extractable do
 
   """
 
-  @spec extract(Extractable.t) :: {:ok, {item :: any, Extractable.t}} | :error
+  @spec extract(Extractable.t()) :: {:ok, {item :: any, Extractable.t()}} | :error
   def extract(collection)
 end
 
@@ -71,6 +71,7 @@ defimpl Extractable, for: Map do
   from the Map, so the whole map needs to be converted to a list and back again.
   """
   def extract(map) when map_size(map) == 0, do: :error
+
   def extract(map) do
     [elem | rest_list] = :maps.to_list(map)
     rest = :maps.from_list(rest_list)
