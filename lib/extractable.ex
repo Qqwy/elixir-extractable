@@ -32,6 +32,7 @@ defprotocol Extractable do
   - For Lists, the _head_ of the list is returned as item.
   - For Maps, an arbitrary `{key, value}` is returned as item.
   - For MapSets, an arbitrary value is returned as item.
+  - For Ranges the first item of the range is returned.
 
   ## Examples
 
@@ -53,9 +54,15 @@ defprotocol Extractable do
       iex> result
       #MapSet<[2, 3]>
 
+      iex> Extractable.extract(200..100)
+      {:ok, {200, 199..100}}
+
+      iex> Extractable.extract(42..42)
+      {:ok, {42, :empty}}
+
   """
 
-  @spec extract(Extractable.t) :: {:ok, {item :: any, Extractable.t}} | :error
+  @spec extract(Extractable.t()) :: {:ok, {item :: any, Extractable.t()}} | :error
   def extract(collection)
 end
 
@@ -71,6 +78,7 @@ defimpl Extractable, for: Map do
   from the Map, so the whole map needs to be converted to a list and back again.
   """
   def extract(map) when map_size(map) == 0, do: :error
+
   def extract(map) do
     [elem | rest_list] = :maps.to_list(map)
     rest = :maps.from_list(rest_list)
@@ -92,5 +100,34 @@ defimpl Extractable, for: MapSet do
       rest = MapSet.new(rest_list)
       {:ok, {elem, rest}}
     end
+  end
+end
+
+defimpl Extractable, for: Range do
+  @doc """
+  Extracts the first element of the range.
+
+  Contrary to other implementations, when it extracts the element of a range of size one,
+  it returns `{integer, :empty}` where integer is the element, and `:empty` an atom.
+
+  ## Example
+
+      iex> Extractable.extract(1..10)
+      {1, 2..10}
+
+      iex> Extractable.extract(42..42)
+      {42, :empty}
+
+  """
+  def extract(first..first) do
+    {:ok, {first, :empty}}
+  end
+
+  def extract(first..last) when first <= last do
+    {:ok, {first, (first + 1)..last}}
+  end
+
+  def extract(first..last) when first > last do
+    {:ok, {first, (first - 1)..last}}
   end
 end
