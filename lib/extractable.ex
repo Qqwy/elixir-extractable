@@ -36,7 +36,7 @@ defprotocol Extractable do
   ## Examples
 
       iex> Extractable.extract([])
-      :error
+      {:error, :empty}
 
       iex> Extractable.extract([1, 2, 3])
       {:ok, {1, [2, 3]}}
@@ -55,42 +55,42 @@ defprotocol Extractable do
 
   """
 
-  @spec extract(Extractable.t) :: {:ok, {item :: any, Extractable.t}} | :error
+  @spec extract(Extractable.t()) :: {:ok, {item :: any, Extractable.t()}} | :error
   def extract(collection)
 end
 
 defimpl Extractable, for: List do
-  def extract([]), do: :error
+  def extract([]), do: {:error, :empty}
   def extract([elem | rest]), do: {:ok, {elem, rest}}
 end
 
 defimpl Extractable, for: Map do
   @doc """
-  The Map implementation is unfortunately not very performant,
-  because Erlang does not expose a way to get an arbitrary `{key, value}`
-  from the Map, so the whole map needs to be converted to a list and back again.
+  Extracts the element corresponding to the first key according to the Erlang term of ordering.
   """
-  def extract(map) when map_size(map) == 0, do: :error
-  def extract(map) do
-    [elem | rest_list] = :maps.to_list(map)
-    rest = :maps.from_list(rest_list)
-    {:ok, {elem, rest}}
+  def extract(map) when map_size(map) > 0 do
+    [key | _] = Map.keys(map)
+    {value, rest} = Map.pop(map, key)
+    {:ok, {{key, value}, rest}}
+  end
+
+  def extract(_map) do
+    {:error, :empty}
   end
 end
 
 defimpl Extractable, for: MapSet do
   @doc """
-  The MapSet implementation is unfortunately not very performant,
-  because Erlang does not expose a way to get an arbitrary `{key, value}`
-  from the MapSet, so the whole map needs to be converted to a list and back again.
+  Extracts the element corresponding to the first key according to the Erlang term of ordering.
   """
   def extract(map_set) do
-    if MapSet.equal?(map_set, MapSet.new()) do
-      {:error, :empty}
-    else
-      [elem | rest_list] = MapSet.to_list(map_set)
-      rest = MapSet.new(rest_list)
-      {:ok, {elem, rest}}
+    case Enum.fetch(map_set, 0) do
+      {:ok, element} ->
+        rest = MapSet.delete(map_set, element)
+        {:ok, {element, rest}}
+
+      :error ->
+        {:error, :empty}
     end
   end
 end
