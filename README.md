@@ -66,3 +66,8 @@ Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_do
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/extractable](https://hexdocs.pm/extractable).
 
+## Changelog
+
+- 0.2.1 - Fixing incorrect typespec on `extract/1` callback. Thank you, @brandonhamilton!
+- 0.2.0 - Cleaner documentation.
+- 0.1.0 - Initial release.
