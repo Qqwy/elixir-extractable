@@ -55,7 +55,7 @@ defprotocol Extractable do
 
   """
 
-  @spec extract(Extractable.t()) :: {:ok, {item :: any, Extractable.t()}} | :error
+  @spec extract(Extractable.t()) :: {:ok, {item :: any(), Extractable.t()}} | {:error, reason :: any()}
   def extract(collection)
 end
 
