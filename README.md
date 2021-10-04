@@ -68,6 +68,9 @@ be found at [https://hexdocs.pm/extractable](https://hexdocs.pm/extractable).
 
 ## Changelog
 
+- 1.0.0 - 
+  - Inclusion of `TypeCheck` for nice errors when the library is used incorrectly.
+  - Implementation for ranges.
 - 0.2.1 - Fixing incorrect typespec on `extract/1` callback. Thank you, @brandonhamilton!
 - 0.2.0 - Cleaner documentation.
 - 0.1.0 - Initial release.
