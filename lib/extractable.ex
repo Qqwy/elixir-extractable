@@ -16,6 +16,12 @@ defprotocol Extractable do
 
   use TypeCheck
 
+  @range_doctest_result (if Version.compare(System.version, "1.12.0") == :lt do
+    "[]"
+  else
+    "43..42//1"
+  end)
+
   @doc """
   Extractable.extract/2 returns `{:ok, {item, collection}}` if it was possible to extract an item from the collection.
   `{:error, reason}` is returned when no element can be extracted.
@@ -60,7 +66,7 @@ defprotocol Extractable do
       {:ok, {200, 199..100}}
 
       iex> Extractable.extract(42..42)
-      {:ok, {42, :empty}}
+      {:ok, {42, #{@range_doctest_result}}}
 
   """
 
@@ -109,27 +115,52 @@ defimpl Extractable, for: Range do
   @doc """
   Extracts the first element of the range.
 
-  Contrary to other implementations, when it extracts the element of a range of size one,
-  it returns `{integer, :empty}` where integer is the element, and `:empty` an atom.
 
   ## Example
 
       iex> Extractable.extract(1..10)
       {1, 2..10}
 
+      iex> Extractable.extract(20..15)
+      {20, 19..15}
+
+  When the last element of a range is extracted,
+   we will return an empty range.
+
+  Empty ranges are only supported in Elixir versions 1.12 and later.
+  In older Elixir versions, we will return an empty list instead.
+
+      # In Elixir versions >= 1.12:
       iex> Extractable.extract(42..42)
-      {42, :empty}
+      {:ok, {42, 43..42}}
+
+      # In Elixir versions < 1.12:
+      iex> Extractable.extract(42..42)
+      {:ok, {42, []}}
 
   """
-  def extract(first..first) do
-    {:ok, {first, :empty}}
+  def extract(%{__struct__: Range, first: single, last: single, step: step}) do
+    empty_range = %{__struct__: Range, first: single + step, last: single, step: step}
+    {:ok, {single, empty_range}}
   end
 
-  def extract(first..last) when first <= last do
-    {:ok, {first, (first + 1)..last}}
+  # Fallback for Elixir < 1.12 where 'step' field is not supported (base case)
+  def extract(%{__struct__: Range, first: single, last: single}) do
+    {:ok, {single, []}}
   end
 
-  def extract(first..last) when first > last do
-    {:ok, {first, (first - 1)..last}}
+
+  def extract(%{__struct__: Range, first: first, last: last, step: step}) do
+    new_range = %{__struct__: Range, first: first + step, last: last, step: step}
+    {:ok, {first, new_range}}
+  end
+
+  # Fallback for Elixir < 1.12 where 'step' field is not supported (inductive case)
+  def extract(%{__struct__: Range, first: first, last: last}) do
+    if first < last do
+      {:ok, {first, (first + 1)..last}}
+    else
+      {:ok, {first, (first - 1)..last}}
+    end
   end
 end
