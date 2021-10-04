@@ -35,6 +35,7 @@ defmodule Extractable.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
+      {:type_check, "~> 0.8"},
       {:ex_doc, "~> 0.14", only: :dev}
     ]
   end
