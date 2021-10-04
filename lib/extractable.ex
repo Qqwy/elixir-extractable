@@ -14,6 +14,8 @@ defprotocol Extractable do
 
   """
 
+  use TypeCheck
+
   @doc """
   Extractable.extract/2 returns `{:ok, {item, collection}}` if it was possible to extract an item from the collection.
   `{:error, reason}` is returned when no element can be extracted.
@@ -62,9 +64,7 @@ defprotocol Extractable do
 
   """
 
-
-  @spec extract(Extractable.t()) :: {:ok, {item :: any(), Extractable.t()}} | {:error, reason :: any()}
-
+  @spec! extract(impl(Extractable)) :: {:ok, {item :: any(), impl(Extractable)}} | {:error, reason :: any()}
   def extract(collection)
 end
 
