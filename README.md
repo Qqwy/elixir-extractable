@@ -28,7 +28,7 @@ Some examples:
 - For Lists, the _head_ of the list is returned as item.
 - For Maps, an arbitrary `{key, value}` is returned as item.
 - For MapSets, an arbitrary value is returned as item.
-- For Ranges, the 'first' value is returned as item.
+- For Ranges the first item of the range is returned.
 
 ## Examples
 
@@ -47,6 +47,12 @@ iex> Extractable.extract(MapSet.new())
 
 iex> Extractable.extract(MapSet.new([1, 2, 3]))
 {:ok, {1, #MapSet<[2, 3]>}}
+
+iex> Extractable.extract(200..100)
+{:ok, {200, 199..100}}
+
+iex> Extractable.extract(42..42)
+{:ok, {42, 43..42//1}}
 ```
 
 
