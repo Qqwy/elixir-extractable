@@ -12,7 +12,14 @@ defmodule Extractable.Mixfile do
      name: "Extractable",
      description: description(),
      source_url: "https://github.com/Qqwy/elixir-extractable",
-     package: package()
+     package: package(),
+     test_coverage: [tool: ExCoveralls],
+     preferred_cli_env: [
+       coveralls: :test,
+       "coveralls.detail": :test,
+       "coveralls.post": :test,
+       "coveralls.html": :test
+     ]
     ]
   end
 
@@ -36,7 +43,8 @@ defmodule Extractable.Mixfile do
   defp deps do
     [
       {:type_check, "~> 0.8"},
-      {:ex_doc, "~> 0.14", only: :dev}
+      {:ex_doc, "~> 0.14", only: :dev},
+      {:excoveralls, "~> 0.10", only: :test},
     ]
   end
 
