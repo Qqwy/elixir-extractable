@@ -28,6 +28,7 @@ Some examples:
 - For Lists, the _head_ of the list is returned as item.
 - For Maps, an arbitrary `{key, value}` is returned as item.
 - For MapSets, an arbitrary value is returned as item.
+- For Ranges, the 'first' value is returned as item.
 
 ## Examples
 
