@@ -16,6 +16,9 @@ defprotocol Extractable do
 
   use TypeCheck
 
+  @typedoc """
+  Any datastructure implementing the Extractable protocol.
+  """
   @opaque! t() :: impl(Extractable)
 
   @range_doctest_result (if Version.compare(System.version(), "1.12.0") == :lt do
