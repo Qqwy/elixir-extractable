@@ -45,6 +45,8 @@ defmodule Extractable.Mixfile do
       {:type_check, "~> 0.8"},
       {:ex_doc, "~> 0.14", only: :dev},
       {:excoveralls, "~> 0.10", only: :test},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
     ]
   end
 
