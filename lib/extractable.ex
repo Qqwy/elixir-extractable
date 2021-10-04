@@ -16,11 +16,11 @@ defprotocol Extractable do
 
   use TypeCheck
 
-  @range_doctest_result (if Version.compare(System.version, "1.12.0") == :lt do
-    "[]"
-  else
-    "43..42//1"
-  end)
+  @range_doctest_result (if Version.compare(System.version(), "1.12.0") == :lt do
+                           "[]"
+                         else
+                           "43..42//1"
+                         end)
 
   @doc """
   Extractable.extract/2 returns `{:ok, {item, collection}}` if it was possible to extract an item from the collection.
@@ -70,7 +70,8 @@ defprotocol Extractable do
 
   """
 
-  @spec! extract(impl(Extractable)) :: {:ok, {item :: any(), impl(Extractable)}} | {:error, reason :: any()}
+  @spec! extract(impl(Extractable)) ::
+           {:ok, {item :: any(), impl(Extractable)}} | {:error, reason :: any()}
   def extract(collection)
 end
 
@@ -148,7 +149,6 @@ defimpl Extractable, for: Range do
   def extract(%{__struct__: Range, first: single, last: single}) do
     {:ok, {single, []}}
   end
-
 
   def extract(%{__struct__: Range, first: first, last: last, step: step}) do
     new_range = %{__struct__: Range, first: first + step, last: last, step: step}

@@ -2,24 +2,26 @@ defmodule Extractable.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :extractable,
-     version: "1.0.0",
-     elixir: "~> 1.9",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     deps: deps(),
-     consolidate_protocols: Mix.env != :test, # Required until elixir-lang/elixir#6270 is fixed.
-     name: "Extractable",
-     description: description(),
-     source_url: "https://github.com/Qqwy/elixir-extractable",
-     package: package(),
-     test_coverage: [tool: ExCoveralls],
-     preferred_cli_env: [
-       coveralls: :test,
-       "coveralls.detail": :test,
-       "coveralls.post": :test,
-       "coveralls.html": :test
-     ]
+    [
+      app: :extractable,
+      version: "1.0.0",
+      elixir: "~> 1.9",
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
+      deps: deps(),
+      # Required until elixir-lang/elixir#6270 is fixed.
+      consolidate_protocols: Mix.env() != :test,
+      name: "Extractable",
+      description: description(),
+      source_url: "https://github.com/Qqwy/elixir-extractable",
+      package: package(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
@@ -46,7 +48,7 @@ defmodule Extractable.Mixfile do
       {:ex_doc, "~> 0.14", only: :dev},
       {:excoveralls, "~> 0.10", only: :test},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
-      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}
     ]
   end
 
