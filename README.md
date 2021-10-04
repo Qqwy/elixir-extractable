@@ -65,7 +65,7 @@ by adding `extractable` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:extractable, "~> 0.1.0"}]
+  [{:extractable, "~> 1.0.0"}]
 end
 ```
 
