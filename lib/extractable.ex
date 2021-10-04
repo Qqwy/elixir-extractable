@@ -16,6 +16,8 @@ defprotocol Extractable do
 
   use TypeCheck
 
+  @opaque! t() :: impl(Extractable)
+
   @range_doctest_result (if Version.compare(System.version(), "1.12.0") == :lt do
                            "[]"
                          else
@@ -70,8 +72,8 @@ defprotocol Extractable do
 
   """
 
-  @spec! extract(impl(Extractable)) ::
-           {:ok, {item :: any(), impl(Extractable)}} | {:error, reason :: any()}
+  @spec! extract(t()) ::
+           {:ok, {item :: any(), t()}} | {:error, reason :: any()}
   def extract(collection)
 end
 
